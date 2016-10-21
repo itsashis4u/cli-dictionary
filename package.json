@@ -1,0 +1,11 @@
+{
+  "name": "cli-dictionary",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "url": "git@github.com:itsashis4u/cli-dictionary.git",
+    "type": "git"
+  },
+  "author": "Ashish Kumar Badtiya <itsashis4u@gmail.com>",
+  "license": "MIT"
+}
