@@ -7,5 +7,9 @@
     "type": "git"
   },
   "author": "Ashish Kumar Badtiya <itsashis4u@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^2.0.0",
+    "node-fetch": "^1.6.3"
+  }
 }
