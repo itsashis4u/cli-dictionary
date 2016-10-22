@@ -24,6 +24,9 @@ if (!option) {
     case 'ex':
             getDefinition(word, 'examples', formatDefinition, option);
             break;
+    case 'play':
+            setupPlay(fetchWordMeaning);
+            break;
     case 'dict':
             getDefinition(word, 'definitions', formatDefinition, 'def');
             getDefinition(word, 'relatedWords', formatDefinition, option);
@@ -138,4 +141,24 @@ function formatWordOfTheDay(data) {
   for (var i = 0; i < data.examples.length; i++) {
     console.log((i + 1) + ' : ' + data.examples[i].text);
   }
+}
+
+function setupPlay(fetchWordMeaning) {
+  fetch(wordsUrl + 'randomWord' + '?api_key=' + process.env.API_KEY + '&hasDictionaryDef=true')
+    .then((res) => {
+      return res.json();
+    }).then((data) => {
+      if (!data.word) {
+        return console.log("Error occured while fetching the word. Try again.");
+      }
+      fetchWordMeaning(data.word);
+    }).catch((err) => {
+      return console.log(err);
+    });
+}
+
+function fetchWordMeaning(word) {
+  var choices = ['definition', 'synonym', 'antonym'];
+  var choice = choices[Math.floor(Math.random() * choices.length)];
+
 }
