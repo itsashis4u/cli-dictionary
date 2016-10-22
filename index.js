@@ -2,37 +2,40 @@
 const dotenv = require('dotenv').config();
 const fetch = require('node-fetch');
 const baseUrl = 'http://api.wordnik.com:80/v4/word.json/';
+const wordsUrl = 'http://api.wordnik.com:80/v4/words.json/';
 var option = process.argv[2];
 var word = process.argv[3];
 const limit = 10;
 if (!option) {
-  getWordOfTheDay();
-}
-option = option.toLowerCase();
+  getWordOfTheDay(formatWordOfTheDay);
+} else {
+  option = option.toLowerCase();
 
-switch(option) {
-  case 'def':
-          getDefinition(word, 'definitions', formatDefinition, option);
-          break;
-  case 'syn':
-          getDefinition(word, 'relatedWords', formatDefinition, option);
-          break;
-  case 'ant':
-          getDefinition(word, 'relatedWords', formatDefinition, option);
-          break;
-  case 'ex':
-          getDefinition(word, 'examples', formatDefinition, option);
-          break;
-  case 'dict':
-          getDefinition(word, 'definitions', formatDefinition, 'def');
-          getDefinition(word, 'relatedWords', formatDefinition, option);
-          break;
-  default:
-          getDefinition(process.argv[2], 'relatedWords', formatDefinition, 'dict');
-          getDefinition(process.argv[2], 'definitions', formatDefinition, 'def');
-          break;
+  switch(option) {
+    case 'def':
+            getDefinition(word, 'definitions', formatDefinition, option);
+            break;
+    case 'syn':
+            getDefinition(word, 'relatedWords', formatDefinition, option);
+            break;
+    case 'ant':
+            getDefinition(word, 'relatedWords', formatDefinition, option);
+            break;
+    case 'ex':
+            getDefinition(word, 'examples', formatDefinition, option);
+            break;
+    case 'dict':
+            getDefinition(word, 'definitions', formatDefinition, 'def');
+            getDefinition(word, 'relatedWords', formatDefinition, option);
+            break;
+    default:
+            getDefinition(process.argv[2], 'relatedWords', formatDefinition, 'dict');
+            getDefinition(process.argv[2], 'definitions', formatDefinition, 'def');
+            break;
 
+  }
 }
+
 
 /**
  * Format the data fetched from the definitions endpoint for the word
@@ -86,7 +89,7 @@ function formatDefinition(type, data, word) {
  * Get the definition of the word provided
  * @param  {String} word             [The word to lookup for]
  * @param  {String} route            [API route to access]
- * @param  {String} formatDefinition [callback for handling data]
+ * @param  {Function} formatDefinition [callback for handling data]
  * @param  {String} type             [option to search for]
  * @return {[type]}                  [error or success callback]
  */
@@ -105,13 +108,34 @@ function getDefinition(word, route,  formatDefinition, type) {
     });
 }
 
-function getWordOfTheDay() {
-  fetch(baseUrl + word + '/' + route + '?api_key=' + process.env.API_KEY + '&limit=' + limit)
+/**
+ * Get word of the day
+ * @param  {Function} formatWord [Callback to format the data from the API]
+ */
+function getWordOfTheDay(formatWord) {
+  fetch(wordsUrl + 'wordOfTheDay' + '?api_key=' + process.env.API_KEY)
     .then((res) => {
       return res.json();
     }).then((data) => {
-      formatWord(type, data, word);
+      formatWord(data);
     }).catch((err) => {
       return console.log(err);
     });
+}
+
+/**
+ * Format the "word of the day"
+ * @param  {JSON} data [JSON data received from API]
+ */
+function formatWordOfTheDay(data) {
+  console.log('Word of the Day\n---------')
+  console.log("Word : " + data.word);
+  console.log('\nDefinitions : ');
+  for (var i = 0; i < data.definitions.length; i++) {
+    console.log((i + 1) + ' : ' + data.definitions[i].text);
+  }
+  console.log('\nExamples : ');
+  for (var i = 0; i < data.examples.length; i++) {
+    console.log((i + 1) + ' : ' + data.examples[i].text);
+  }
 }
