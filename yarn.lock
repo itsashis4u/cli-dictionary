@@ -25,3 +25,7 @@ node-fetch:
     encoding "^0.1.11"
     is-stream "^1.0.1"
 
+readline-sync:
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/readline-sync/-/readline-sync-1.4.4.tgz#42b168024b2014a6ec1f165ab1b3e442dce22215"
+
